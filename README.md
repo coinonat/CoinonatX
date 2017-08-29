@@ -69,3 +69,8 @@ BUILD WINDOWS
 13) Type "qmake USE_UPNP=0" and hit enter to run
 
 14) Type "mingw32-make" and hit enter to start building. When it's finished you can find your .exe in the release folder.
+
+#### Build problems under Linux
+
+* `miniupnpc/miniwget.h: No such file or directory` please install: `apt-get install libminiupnpc-dev`
+* `src/leveldb/libleveldb.a: No such file or directory` please go to `src/leveldb` and [change user rights to 755 *](https://github.com/antibitcoin/AntiBitcoin-source/issues/2) 
