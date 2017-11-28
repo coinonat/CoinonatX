@@ -6,6 +6,9 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QFuture>
+
+#define MASTERNODELIST_UPDATE_SECONDS 15
 
 namespace Ui {
     class MasternodeManager;
@@ -32,6 +35,7 @@ public:
 
 public slots:
     void updateNodeList();
+    void updateNodeListConc();
     void updateAdrenalineNode(QString alias, QString addr, QString privkey, QString collateral);
 
 signals:
@@ -42,6 +46,7 @@ private:
     ClientModel *clientModel;
     WalletModel *walletModel;
     CCriticalSection cs_adrenaline;
+    QFuture<void> f1;
     void subscribeToCoreSignals();
     void unsubscribeFromCoreSignals();
 
