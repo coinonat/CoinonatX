@@ -23,6 +23,17 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QMessageBox>
+#include <QtConcurrent/QtConcurrent>
+
+
+struct MasternodeRow {
+    QTableWidgetItem *activeItem;
+    QTableWidgetItem *addressItem;
+    QTableWidgetItem *rankItem;
+    QTableWidgetItem *activeSecondsItem;
+    QTableWidgetItem *lastSeenItem;
+    QTableWidgetItem *pubkeyItem;
+};
 
 MasternodeManager::MasternodeManager(QWidget *parent) :
     QWidget(parent),
@@ -46,7 +57,7 @@ MasternodeManager::MasternodeManager(QWidget *parent) :
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateNodeList()));
     if(!GetBoolArg("-reindexaddr", false))
-        timer->start(30000);
+        timer->start(60000);
 
     
 
@@ -143,41 +154,44 @@ static QString seconds_to_DHMS(quint32 duration)
   return res.sprintf("%dd %02dh:%02dm:%02ds", days, hours, minutes, seconds);
 }
 
-void MasternodeManager::updateNodeList()
+void MasternodeManager::updateNodeListConc()
 {
     TRY_LOCK(cs_masternodes, lockMasternodes);
     if(!lockMasternodes)
         return;
 
     ui->countLabel->setText("Updating...");
-    ui->tableWidget->clearContents();
-    ui->tableWidget->setRowCount(0);
-    BOOST_FOREACH(CMasterNode mn, vecMasternodes) 
-    {
-        int mnRow = 0;
-        ui->tableWidget->insertRow(0);
 
- 	// populate list
-	// Address, Rank, Active, Active Seconds, Last Seen, Pub Key
-	QTableWidgetItem *activeItem = new QTableWidgetItem(QString::number(mn.IsEnabled()));
-	QTableWidgetItem *addressItem = new QTableWidgetItem(QString::fromStdString(mn.addr.ToString()));
-	QTableWidgetItem *rankItem = new QTableWidgetItem(QString::number(GetMasternodeRank(mn.vin, pindexBest->nHeight)));
-	QTableWidgetItem *activeSecondsItem = new QTableWidgetItem(seconds_to_DHMS((qint64)(mn.lastTimeSeen - mn.now)));
-	QTableWidgetItem *lastSeenItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat(mn.lastTimeSeen)));
-	
-	CScript pubkey;
-        pubkey =GetScriptForDestination(mn.pubkey.GetID());
-        CTxDestination address1;
-        ExtractDestination(pubkey, address1);
-        CBitcoinAddress address2(address1);
-	QTableWidgetItem *pubkeyItem = new QTableWidgetItem(QString::fromStdString(address2.ToString()));
-	
-	ui->tableWidget->setItem(mnRow, 0, addressItem);
-	ui->tableWidget->setItem(mnRow, 1, rankItem);
-	ui->tableWidget->setItem(mnRow, 2, activeItem);
-	ui->tableWidget->setItem(mnRow, 3, activeSecondsItem);
-	ui->tableWidget->setItem(mnRow, 4, lastSeenItem);
-	ui->tableWidget->setItem(mnRow, 5, pubkeyItem);
+    std::vector<MasternodeRow> tableRows;
+    BOOST_FOREACH(CMasterNode mn, vecMasternodes)
+    {
+        CScript pubkey;
+            pubkey =GetScriptForDestination(mn.pubkey.GetID());
+            CTxDestination address1;
+            ExtractDestination(pubkey, address1);
+            CBitcoinAddress address2(address1);
+
+        MasternodeRow row;
+        row.addressItem = new QTableWidgetItem(QString::fromStdString(mn.addr.ToString()));
+        row.rankItem = new QTableWidgetItem(QString::number(GetMasternodeRank(mn.vin, pindexBest->nHeight)));
+        row.activeItem = new QTableWidgetItem(QString::number(mn.IsEnabled()));
+        row.activeSecondsItem = new QTableWidgetItem(seconds_to_DHMS((qint64)(mn.lastTimeSeen - mn.now)));
+        row.lastSeenItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat(mn.lastTimeSeen)));
+        row.pubkeyItem = new QTableWidgetItem(QString::fromStdString(address2.ToString()));
+        tableRows.push_back(row);
+    }
+
+    ui->tableWidget->clearContents();
+    ui->tableWidget->setRowCount(tableRows.size());
+    int mnRow = 0;
+    BOOST_FOREACH(MasternodeRow row, tableRows) {
+        ui->tableWidget->setItem(mnRow, 0, row.addressItem);
+        ui->tableWidget->setItem(mnRow, 1, row.rankItem);
+        ui->tableWidget->setItem(mnRow, 2, row.activeItem);
+        ui->tableWidget->setItem(mnRow, 3, row.activeSecondsItem);
+        ui->tableWidget->setItem(mnRow, 4, row.lastSeenItem);
+        ui->tableWidget->setItem(mnRow, 5, row.pubkeyItem);
+        mnRow++;
     }
 
     ui->countLabel->setText(QString::number(ui->tableWidget->rowCount()));
@@ -190,6 +204,24 @@ void MasternodeManager::updateNodeList()
             updateAdrenalineNode(QString::fromStdString(adrenaline.second.sAlias), QString::fromStdString(adrenaline.second.sAddress), QString::fromStdString(adrenaline.second.sMasternodePrivKey), QString::fromStdString(adrenaline.second.sCollateralAddress));
         }
     }
+}
+
+void MasternodeManager::updateNodeList()
+{
+
+    TRY_LOCK(cs_masternodes, lockMasternodes);
+    if(!lockMasternodes)
+        return;
+
+    static int64_t nTimeListUpdated = GetTime();
+
+    int64_t nSecondsToWait = nTimeListUpdated - GetTime() + MASTERNODELIST_UPDATE_SECONDS;
+    if (nSecondsToWait > 0) return;
+
+    nTimeListUpdated = GetTime();
+    if (f1.isFinished())
+        f1 = QtConcurrent::run(this,&MasternodeManager::updateNodeListConc);
+
 }
 
 

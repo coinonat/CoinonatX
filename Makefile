@@ -884,7 +884,7 @@ distclean: clean
 	cd /home/maxim/CoinonatX-master/src/leveldb && CC=gcc CXX=g++ $(MAKE) OPT="-fpermissive -fstack-protector-all --param ssp-buffer-size=1 -D_FORTIFY_SOURCE=2 -O2" libleveldb.a libmemenv.a
 
 /home/maxim/CoinonatX-master/src/secp256k1/src/libsecp256k1_la-secp256k1.o: FORCE
-	cd /home/maxim/CoinonatX-master/src/secp256k1 && sudo sh ./autogen.sh && ./configure --enable-module-recovery && CC=gcc CXX=g++ $(MAKE) OPT="-fpermissive -fstack-protector-all --param ssp-buffer-size=1 -D_FORTIFY_SOURCE=2 -O2"
+	cd /home/maxim/CoinonatX-master/src/secp256k1 && sh ./autogen.sh && ./configure --enable-module-recovery && CC=gcc CXX=g++ $(MAKE) OPT="-fpermissive -fstack-protector-all --param ssp-buffer-size=1 -D_FORTIFY_SOURCE=2 -O2"
 
 /home/maxim/CoinonatX-master/build/build.h: FORCE
 	cd /home/maxim/CoinonatX-master; /bin/sh share/genbuild.sh /home/maxim/CoinonatX-master/build/build.h
