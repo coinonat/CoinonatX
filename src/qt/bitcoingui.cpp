@@ -188,7 +188,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     if (GetBoolArg("-staking", true))
     {
         QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
-        connect(timerStakingIcon, SIGNAL(timeout()), this, SLOT(updateStakingIcon()));
+        connect(timerStakingIcon, SIGNAL(timeout()), this, SLOT(updateStakingIconConc()));
         timerStakingIcon->start(20 * 1000);
         updateStakingIcon();
     }
@@ -1114,7 +1114,7 @@ void BitcoinGUI::updateWeight()
 }
 
 void BitcoinGUI::updateStakingIconConc() {
-    QtConcurrent::run(this,&BitcoinGUI::updateStakingIconConc);
+    QtConcurrent::run(this,&BitcoinGUI::updateStakingIcon);
 }
 
 void BitcoinGUI::updateStakingIcon()
