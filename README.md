@@ -39,7 +39,7 @@ BUILD WINDOWS
 -------------
 
 1) Download Qt.zip from https://github.com/CoinonatX/CoinonatX/releases/tag/v1.0 and unpack to C:/
-
+# Sorry, tag is broken, cannot build.
 2) Download CoinonatX source from https://github.com/CoinonatX/CoinonatX/archive/master.zip 
 
 2.1) Unpack to C:/CoinonatX
