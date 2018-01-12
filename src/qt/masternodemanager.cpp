@@ -57,7 +57,7 @@ MasternodeManager::MasternodeManager(QWidget *parent) :
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateNodeList()));
     if(!GetBoolArg("-reindexaddr", false))
-        timer->start(30000);
+        timer->start(60000);
 
     
 
@@ -162,14 +162,9 @@ void MasternodeManager::updateNodeListConc()
 
     ui->countLabel->setText("Updating...");
 
-    std::vector<MasterNodeRank> ranks = GetMasternodeRanks(pindexBest->nHeight);
-
     std::vector<MasternodeRow> tableRows;
-    BOOST_FOREACH(MasterNodeRank r, ranks)
+    BOOST_FOREACH(CMasterNode mn, vecMasternodes)
     {
-        int rank = r.first;
-        CMasterNode mn = r.second;
-
         CScript pubkey;
             pubkey =GetScriptForDestination(mn.pubkey.GetID());
             CTxDestination address1;
@@ -178,7 +173,7 @@ void MasternodeManager::updateNodeListConc()
 
         MasternodeRow row;
         row.addressItem = new QTableWidgetItem(QString::fromStdString(mn.addr.ToString()));
-        row.rankItem = new QTableWidgetItem(QString::number(rank));
+        row.rankItem = new QTableWidgetItem(QString::number(GetMasternodeRank(mn.vin, pindexBest->nHeight)));
         row.activeItem = new QTableWidgetItem(QString::number(mn.IsEnabled()));
         row.activeSecondsItem = new QTableWidgetItem(seconds_to_DHMS((qint64)(mn.lastTimeSeen - mn.now)));
         row.lastSeenItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat(mn.lastTimeSeen)));

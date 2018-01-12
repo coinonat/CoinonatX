@@ -139,7 +139,6 @@ public:
 
 private:
     CWallet *wallet;
-    bool fForceCheckBalanceChanged;
 
     // Wallet has an options model for wallet-specific options
     // (transaction fee, for example)

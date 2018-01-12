@@ -3,8 +3,6 @@
 #include "optionsmodel.h"
 #include "addresstablemodel.h"
 #include "transactiontablemodel.h"
-#include "transactiondesc.h"
-#include "transactionrecord.h"
 
 #include "ui_interface.h"
 #include "wallet.h"
@@ -24,7 +22,6 @@ WalletModel::WalletModel(CWallet *wallet, OptionsModel *optionsModel, QObject *p
     cachedEncryptionStatus(Unencrypted),
     cachedNumBlocks(0)
 {
-    fForceCheckBalanceChanged = false;
     addressTableModel = new AddressTableModel(wallet, this);
     transactionTableModel = new TransactionTableModel(wallet, this);
 
@@ -99,10 +96,8 @@ void WalletModel::pollBalanceChanged()
     if(!lockWallet)
         return;
 
-    if(fForceCheckBalanceChanged || nBestHeight != cachedNumBlocks)
+    if(nBestHeight != cachedNumBlocks)
     {
-        fForceCheckBalanceChanged = false;
-
         // Balance and number of transactions might have changed
         cachedNumBlocks = nBestHeight;
 
@@ -134,7 +129,11 @@ void WalletModel::checkBalanceChanged()
 
 void WalletModel::updateTransaction(const QString &hash, int status)
 {
-    fForceCheckBalanceChanged = true;
+    if(transactionTableModel)
+        transactionTableModel->updateTransaction(hash, status);
+
+    // Balance and number of transactions might have changed
+    checkBalanceChanged();
 }
 
 void WalletModel::updateAddressBook(const QString &address, const QString &label, bool isMine, int status)

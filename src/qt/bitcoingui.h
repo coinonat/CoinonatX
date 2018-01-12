@@ -128,14 +128,12 @@ private:
     void createTrayIcon();
 
     void clearWidgets();
-    void updateStakingIcon();
 
 public slots:
     /** Set number of connections shown in the UI */
     void setNumConnections(int count);
     /** Set number of blocks shown in the UI */
     void setNumBlocks(int count);
-    void setNumBlocksConc(int count);
     /** Set the encryption status as shown in the UI.
        @param[in] status            current encryption status
        @see WalletModel::EncryptionStatus
@@ -213,7 +211,7 @@ private slots:
     void toggleHidden();
 
     void updateWeight();
-    void updateStakingIconConc();
+    void updateStakingIcon();
 
     /** called by a timer to check if fRequestShutdown has been set **/
     void detectShutdown();

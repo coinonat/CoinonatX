@@ -2,25 +2,23 @@
 
 CoinonatX is a PoS-based cryptocurrency.
 
-CoinonatX uses
-- libsecp256k1,
-- libgmp,
-- Boost1.55 OR Boost1.57,
-- Openssl1.01m,
-- Berkeley DB 4.8,
-- QT5
+CoinonatX uses libsecp256k1,
+			  libgmp,
+			  Boost1.55,
+			  OR Boost1.57,  
+			  Openssl1.01m,
+			  Berkeley DB 4.8,
+			  QT5 to compile
 
 
-Block Spacing: `90 Seconds`
+Block Spacing: 90 Seconds
+Stake Minimum Age: 6 Hours
 
-Stake Minimum Age: `6 Hours`
-
-Port: `44678`
-
-RPC Port: `44578`
+Port: 44678
+RPC Port: 44578
 
 
-Linux build (see the [Wiki](coming soon) for dependencies)
+BUILD LINUX (see the [Wiki](https://github.com/CoinonatX/CoinonatX/wiki/Unix-Build) for dependencies)
 -----------
 1) git clone https://github.com/CoinonatX/CoinonatX.git CoinonatX
 
@@ -37,12 +35,12 @@ Linux build (see the [Wiki](coming soon) for dependencies)
 
 
 
-Windows build
+BUILD WINDOWS
 -------------
 
 1) Download Qt.zip from https://github.com/CoinonatX/CoinonatX/releases/tag/v1.0 and unpack to C:/
 
-2) Download CoinonatX source from https://github.com/CoinonatX/CoinonatX/archive/master.zip
+2) Download CoinonatX source from https://github.com/CoinonatX/CoinonatX/archive/master.zip 
 
 2.1) Unpack to C:/CoinonatX
 

@@ -18,7 +18,6 @@
 #include <QDebug>
 #include <QScrollArea>
 #include <QScroller>
-#include <QtConcurrent/QtConcurrent>
 
 #define DECORATION_SIZE 64
 #define NUM_ITEMS 6
@@ -143,7 +142,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     } else {
 	qDebug() << "Dark Send Status Timer";
         timer = new QTimer(this);
-        connect(timer, SIGNAL(timeout()), this, SLOT(darkSendStatusConc()));
+        connect(timer, SIGNAL(timeout()), this, SLOT(darkSendStatus()));
 	if(!GetBoolArg("-reindexaddr", false))
             timer->start(60000);
     }
@@ -283,13 +282,7 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
 void OverviewPage::updateDarksendProgress()
 {
     qDebug() << "updateDarksendProgress()";
-    {
-        TRY_LOCK(cs_main, lockMain);
-        if (!lockMain)
-            return;
-
-        if(IsInitialBlockDownload()) return;
-    }
+    if(IsInitialBlockDownload()) return;
     
     qDebug() << "updateDarksendProgress() getbalance";
     int64_t nBalance = pwalletMain->GetBalance();
@@ -348,9 +341,6 @@ void OverviewPage::updateDarksendProgress()
     ui->darksendProgress->setToolTip(s);
 }
 
-void OverviewPage::darkSendStatusConc() {
-    QtConcurrent::run(this,&OverviewPage::darkSendStatus);
-}
 
 void OverviewPage::darkSendStatus()
 {

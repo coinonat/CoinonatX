@@ -75,11 +75,9 @@ private:
     QString formatTooltip(const TransactionRecord *rec) const;
     QVariant txStatusDecoration(const TransactionRecord *wtx) const;
     QVariant txAddressDecoration(const TransactionRecord *wtx) const;
-    void subscribeToCoreSignals();
-    void unsubscribeFromCoreSignals();
 
 public slots:
-    void updateTransaction(const QString &hash, int status, bool showTransaction);
+    void updateTransaction(const QString &hash, int status);
     void updateConfirmations();
     void updateDisplayUnit();
 

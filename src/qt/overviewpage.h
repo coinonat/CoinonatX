@@ -31,7 +31,7 @@ public:
     void updateDarksendProgress();
 
 public slots:
-    void darkSendStatusConc();
+    void darkSendStatus();
     void setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance, qint64 immatureBalance, qint64 anonymizedBalance);
 
 signals:
@@ -55,8 +55,6 @@ private:
     int cachedNumBlocks;
     TxViewDelegate *txdelegate;
     TransactionFilterProxy *filter;
-
-    void darkSendStatus();
 
 private slots:
     void toggleDarksend();
