@@ -22,6 +22,7 @@ WalletModel::WalletModel(CWallet *wallet, OptionsModel *optionsModel, QObject *p
     cachedEncryptionStatus(Unencrypted),
     cachedNumBlocks(0)
 {
+	fForceCheckBalanceChanged = false;
     addressTableModel = new AddressTableModel(wallet, this);
     transactionTableModel = new TransactionTableModel(wallet, this);
 
@@ -96,12 +97,13 @@ void WalletModel::pollBalanceChanged()
     if(!lockWallet)
         return;
 
-    if(nBestHeight != cachedNumBlocks)
+    if(fForceCheckBalanceChanged || nBestHeight != cachedNumBlocks)
     {
+		fForceCheckBalanceChanged = false;
         // Balance and number of transactions might have changed
         cachedNumBlocks = nBestHeight;
 
-        checkBalanceChanged();
+        fForceCheckBalanceChanged = true;
         if(transactionTableModel)
             transactionTableModel->updateConfirmations();
     }
@@ -420,6 +422,7 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(const QList<SendCoinsRecipie
         }
     }
 
+	checkBalanceChanged(); // update balance immediately, otherwise there could be a short noticeable delay until pollBalanceChanged hits
     return SendCoinsReturn(OK, 0, hex);
 }
 
