@@ -267,8 +267,14 @@ void OverviewPage::updateDisplayUnit()
 
 void OverviewPage::updateAlerts(const QString &warnings)
 {
+	this->is_out_of_sync = fShow;
     this->ui->labelAlerts->setVisible(!warnings.isEmpty());
     this->ui->labelAlerts->setText(warnings);
+}
+
+bool OverviewPage::getOutOfSyncWarning(void)
+{
+	return this->is_out_of_sync;
 }
 
 void OverviewPage::showOutOfSyncWarning(bool fShow)
