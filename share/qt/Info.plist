@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
-<plist version="0.9">
+<plist version="@FULL_VERSION@">
 <dict>
 	<key>CFBundleIconFile</key>
-	<string>bitcoin.icns</string>
+        <string>@ICON@</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleGetInfoString</key>
-	<string>ArpaCoin-Qt</string>
+        <string>@LIBRARY@</string>
 	<key>CFBundleSignature</key>
-	<string>????</string>
+	<string>@TYPEINFO@<string>
 	<key>CFBundleExecutable</key>
-	<string>ArpaCoin-Qt</string>
+        <string>@EXECUTABLE@</string>
 	<key>CFBundleIdentifier</key>
-	<string>co.ArpaCoin.ArpaCoin-Qt</string>
+        <string>@BUNDLEIDENTIFIER@</string>
         <key>CFBundleURLTypes</key>
         <array>
           <dict>
             <key>CFBundleTypeRole</key>
             <string>Editor</string>
             <key>CFBundleURLName</key>
-            <string>co.ArpaCoin.ArpaCoinPayment</string>
+            <string>@BUNDLEIDENTIFIER@</string>
             <key>CFBundleURLSchemes</key>
             <array>
-              <string>ArpaCoin</string>
+              <string>CoinonatX</string>
             </array>
           </dict>
         </array>
