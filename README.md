@@ -1,5 +1,7 @@
 # CoinonatX
 
+![CoinonatX](logo.png)
+
 CoinonatX is a PoS-based cryptocurrency.
 
 CoinonatX uses libsecp256k1,
@@ -18,7 +20,7 @@ Port: 44678
 RPC Port: 44578
 
 
-BUILD LINUX (see the [Wiki](https://github.com/CoinonatX/CoinonatX/wiki/Unix-Build) for dependencies)
+Linux build
 -----------
 1) git clone https://github.com/CoinonatX/CoinonatX.git CoinonatX
 
@@ -35,11 +37,11 @@ BUILD LINUX (see the [Wiki](https://github.com/CoinonatX/CoinonatX/wiki/Unix-Bui
 
 
 
-BUILD WINDOWS
+Windows build
 -------------
 
-1) Download Qt.zip from https://github.com/CoinonatX/CoinonatX/releases/tag/v1.0 and unpack to C:/
-# Sorry, tag is broken, cannot build.
+1) Download release from https://github.com/CoinonatX/CoinonatX/releases and unpack to C:/
+
 2) Download CoinonatX source from https://github.com/CoinonatX/CoinonatX/archive/master.zip 
 
 2.1) Unpack to C:/CoinonatX
