@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = CoinonatX-qt
-VERSION = 2.0.3.3
+VERSION = 2.0.4.4
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
 QT += network printsupport
 DEFINES += ENABLE_WALLET

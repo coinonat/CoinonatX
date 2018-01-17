@@ -3,6 +3,8 @@
 #include "optionsmodel.h"
 #include "addresstablemodel.h"
 #include "transactiontablemodel.h"
+#include "transactiondesc.h"
+#include "transactionrecord.h"
 
 #include "ui_interface.h"
 #include "wallet.h"
@@ -22,6 +24,7 @@ WalletModel::WalletModel(CWallet *wallet, OptionsModel *optionsModel, QObject *p
     cachedEncryptionStatus(Unencrypted),
     cachedNumBlocks(0)
 {
+	fForceCheckBalanceChanged = false;
     addressTableModel = new AddressTableModel(wallet, this);
     transactionTableModel = new TransactionTableModel(wallet, this);
 
@@ -96,12 +99,13 @@ void WalletModel::pollBalanceChanged()
     if(!lockWallet)
         return;
 
-    if(nBestHeight != cachedNumBlocks)
+    if(fForceCheckBalanceChanged || nBestHeight != cachedNumBlocks)
     {
+		fForceCheckBalanceChanged = false;
         // Balance and number of transactions might have changed
         cachedNumBlocks = nBestHeight;
 
-        checkBalanceChanged();
+        fForceCheckBalanceChanged = true;
         if(transactionTableModel)
             transactionTableModel->updateConfirmations();
     }
@@ -129,8 +133,8 @@ void WalletModel::checkBalanceChanged()
 
 void WalletModel::updateTransaction(const QString &hash, int status)
 {
-    if(transactionTableModel)
-        transactionTableModel->updateTransaction(hash, status);
+    //if(transactionTableModel)
+    //    transactionTableModel->updateTransaction(hash, status);
 
     // Balance and number of transactions might have changed
     checkBalanceChanged();
@@ -258,9 +262,9 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(const QList<SendCoinsRecipie
                     
                     if (fDebug)
                     {
-                        printf("Stealth send to generated pubkey %"PRIszu": %s\n", pkSendTo.size(), HexStr(pkSendTo).c_str());
+                        printf("Stealth send to generated pubkey %" PRIszu ": %s\n", pkSendTo.size(), HexStr(pkSendTo).c_str());
                         printf("hash %s\n", addrTo.ToString().c_str());
-                        printf("ephem_pubkey %"PRIszu": %s\n", ephem_pubkey.size(), HexStr(ephem_pubkey).c_str());
+                        printf("ephem_pubkey %" PRIszu ": %s\n", ephem_pubkey.size(), HexStr(ephem_pubkey).c_str());
                     };
                     
                     CScript scriptPubKey;
@@ -420,6 +424,7 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(const QList<SendCoinsRecipie
         }
     }
 
+	checkBalanceChanged(); // update balance immediately, otherwise there could be a short noticeable delay until pollBalanceChanged hits
     return SendCoinsReturn(OK, 0, hex);
 }
 
