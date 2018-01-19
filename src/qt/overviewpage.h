@@ -60,8 +60,6 @@ private:
 	bool is_out_of_sync;
     void darkSendStatus();
 
-    void darkSendStatus();
-
 private slots:
     void toggleDarksend();
     void darksendAuto();
