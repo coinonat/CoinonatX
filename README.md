@@ -1,5 +1,7 @@
 # CoinonatX
 
+![CoinonatX](logo.png)
+
 CoinonatX is a PoS-based cryptocurrency.
 
 CoinonatX uses
@@ -20,19 +22,35 @@ Port: `44678`
 RPC Port: `44578`
 
 
+<<<<<<< HEAD
 Linux build (see the [Wiki](coming soon) for dependencies)
 -----------
-1) git clone https://github.com/CoinonatX/CoinonatX.git CoinonatX
+- git clone https://github.com/xcxt-community/CoinonatX.git CoinonatX
 
-2) cd CoinonatX/src
+- cd CoinonatX/src
 
-3) sudo make -f makefile.unix            # Headless CoinonatX
+- sudo make -f makefile.unix            # Headless CoinonatX
 
 (optional)
 
-4) strip CoinonatXd
+- strip CoinonatXd
 
-5) sudo cp CoinonatXd /usr/local/bin
+- sudo cp CoinonatXd /usr/local/bin
+=======
+Linux build
+-----------
+git clone https://github.com/CoinonatX/CoinonatX.git CoinonatX
+
+cd CoinonatX/src
+
+sudo make -f makefile.unix            # Headless CoinonatX
+
+(optional)
+
+strip CoinonatXd
+
+sudo cp CoinonatXd /usr/local/bin
+>>>>>>> upstream/master
 
 
 
@@ -40,34 +58,34 @@ Linux build (see the [Wiki](coming soon) for dependencies)
 Windows build
 -------------
 
-1) Download Qt.zip from https://github.com/CoinonatX/CoinonatX/releases/tag/v1.0 and unpack to C:/
+- Download release from https://github.com/xcxt-community/CoinonatX/releases and unpack to C:/
 
-2) Download CoinonatX source from https://github.com/CoinonatX/CoinonatX/archive/master.zip
+- Download CoinonatX source from https://github.com/xcxt-community/CoinonatX/archive/master.zip
 
-2.1) Unpack to C:/CoinonatX
+ - Unpack to C:/CoinonatX
 
-3) Install Perl for windows from the homepage http://www.activestate.com/activeperl/downloads
+- Install Perl for windows from the homepage http://www.activestate.com/activeperl/downloads
 
-4) Download Python 2.7 https://www.python.org/downloads/windows/
+- Download Python 2.7 https://www.python.org/downloads/windows/
 
-4.1) While installing python make sure to add python.exe to the path.
+ - While installing python make sure to add python.exe to the path.
 
-5) Run msys.bat located in C:\MinGW49-32\msys\1.0
+- Run msys.bat located in C:\MinGW49-32\msys\1.0
 
-6) cd /C/CoinonatX/src/leveldb
+- cd /C/CoinonatX/src/leveldb
 
-7) Type "TARGET_OS=NATIVE_WINDOWS make libleveldb.a libmemenv.a" and hit enter to build leveldb
+- Type "TARGET_OS=NATIVE_WINDOWS make libleveldb.a libmemenv.a" and hit enter to build leveldb
 
-8) Exit msys shell
+- Exit msys shell
 
-9) Open windows command prompt
+- Open windows command prompt
 
-10) cd C:/dev
+- cd C:/dev
 
-11) Type "49-32-qt5.bat" and hit enter to run
+- Type "49-32-qt5.bat" and hit enter to run
 
-12) cd ../CoinonatX
+- cd ../CoinonatX
 
-13) Type "qmake USE_UPNP=0" and hit enter to run
+- Type "qmake USE_UPNP=0" and hit enter to run
 
-14) Type "mingw32-make" and hit enter to start building. When it's finished you can find your .exe in the release folder.
+- Type "mingw32-make" and hit enter to start building. When it's finished you can find your .exe in the release folder.
