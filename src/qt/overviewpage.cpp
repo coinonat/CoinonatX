@@ -272,6 +272,11 @@ void OverviewPage::updateAlerts(const QString &warnings)
     this->ui->labelAlerts->setText(warnings);
 }
 
+bool OverviewPage::getOutOfSyncWarning(void)
+{
+	return this->is_out_of_sync;
+}
+
 void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
     ui->labelWalletStatus->setVisible(fShow);

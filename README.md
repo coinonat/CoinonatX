@@ -22,6 +22,7 @@ Port: `44678`
 RPC Port: `44578`
 
 
+<<<<<<< HEAD
 Linux build (see the [Wiki](coming soon) for dependencies)
 -----------
 - git clone https://github.com/xcxt-community/CoinonatX.git CoinonatX
@@ -35,6 +36,21 @@ Linux build (see the [Wiki](coming soon) for dependencies)
 - strip CoinonatXd
 
 - sudo cp CoinonatXd /usr/local/bin
+=======
+Linux build
+-----------
+git clone https://github.com/CoinonatX/CoinonatX.git CoinonatX
+
+cd CoinonatX/src
+
+sudo make -f makefile.unix            # Headless CoinonatX
+
+(optional)
+
+strip CoinonatXd
+
+sudo cp CoinonatXd /usr/local/bin
+>>>>>>> upstream/master
 
 
 
