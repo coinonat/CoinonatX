@@ -630,15 +630,16 @@ void BitcoinGUI::setNumBlocksConc(int count) {
 
 void BitcoinGUI::setNumBlocks(int count)
 {
-
-    QString tooltip;
-
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
     QDateTime currentDate = QDateTime::currentDateTime();
     int totalSecs = GetTime() - Params().GenesisBlock().GetBlockTime();
     int secs = lastBlockDate.secsTo(currentDate);
 
-    tooltip = tr("Processed %1 blocks of transaction history.").arg(count);
+    QMetaObject::invokeMethod(this, "updateNumBlocks", Qt::QueuedConnection, Q_ARG(int, count), Q_ARG(int, totalSecs), Q_ARG(int, secs));
+}
+
+void BitcoinGUI::updateNumBlocks(int count, int totalSecs, int secs) {
+    QString tooltip = tr("Processed %1 blocks of transaction history.").arg(count);
 
     // Set icon state: spinning if catching up, tick otherwise
     if(secs < 90*60)
