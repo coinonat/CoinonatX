@@ -412,7 +412,7 @@ void BitcoinGUI::createToolBars()
 	QString toolBarStyle = "QToolButton { color: #0382ab; ";
 
     if (!fUseBlackTheme) {
-        toolBarStyle += "border: 2px solid white;";
+        toolBarStyle += "border: 2px solid rgba(255,255,255,0);";
     } else {
         toolBarStyle += "border: 2px solid rgb(30,32,36);";
     }
