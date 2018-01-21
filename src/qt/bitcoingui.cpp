@@ -91,7 +91,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     nWeight(0)
 {
     resize(970, 570);
-    setWindowTitle(tr("CoinonatX") + " - " + tr("Wallet"));
+    setWindowTitle(tr("CoinonatX") + " - " + tr("Wallet") + " - " + QString(FormatFullVersion().c_str()));
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));

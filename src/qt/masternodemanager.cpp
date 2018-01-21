@@ -26,14 +26,6 @@
 #include <QtConcurrent/QtConcurrent>
 
 
-struct MasternodeRow {
-    QTableWidgetItem *activeItem;
-    QTableWidgetItem *addressItem;
-    QTableWidgetItem *rankItem;
-    QTableWidgetItem *activeSecondsItem;
-    QTableWidgetItem *lastSeenItem;
-    QTableWidgetItem *pubkeyItem;
-};
 
 MasternodeManager::MasternodeManager(QWidget *parent) :
     QWidget(parent),
@@ -49,8 +41,16 @@ MasternodeManager::MasternodeManager(QWidget *parent) :
     ui->stopButton->setEnabled(false);
     ui->copyAddressButton->setEnabled(false);
 
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    ui->tableWidget_2->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    ui->tableWidget->setColumnWidth(0, 192);
+    ui->tableWidget->setColumnWidth(1, 48);
+    ui->tableWidget->setColumnWidth(2, 48);
+    ui->tableWidget->setColumnWidth(3, 148);
+    ui->tableWidget->setColumnWidth(4, 100);
+
+    ui->tableWidget_2->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+    connect(ui->filterEdit, SIGNAL(textChanged(QString)), this, SLOT(filterMasternodeList()));
 
     subscribeToCoreSignals();
 
@@ -157,14 +157,15 @@ static QString seconds_to_DHMS(quint32 duration)
 void MasternodeManager::updateNodeListConc()
 {
     TRY_LOCK(cs_masternodes, lockMasternodes);
-    if(!lockMasternodes)
+    if(!lockMasternodes) {
+        QMetaObject::invokeMethod(ui->countLabel, "setText", Qt::QueuedConnection, Q_ARG(QString, QString::number(ui->tableWidget->rowCount())));
         return;
-
-    ui->countLabel->setText("Updating...");
+    }
 
     std::vector<MasterNodeRank> ranks = GetMasternodeRanks(pindexBest->nHeight);
 
-    std::vector<MasternodeRow> tableRows;
+    //std::vector<MasternodeRow> tableRows;
+    masternodeTableRows.clear();
     BOOST_FOREACH(MasterNodeRank r, ranks)
     {
         int rank = r.first;
@@ -183,23 +184,10 @@ void MasternodeManager::updateNodeListConc()
         row.activeSecondsItem = new QTableWidgetItem(seconds_to_DHMS((qint64)(mn.lastTimeSeen - mn.now)));
         row.lastSeenItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat(mn.lastTimeSeen)));
         row.pubkeyItem = new QTableWidgetItem(QString::fromStdString(address2.ToString()));
-        tableRows.push_back(row);
+        masternodeTableRows.push_back(row);
     }
 
-    ui->tableWidget->clearContents();
-    ui->tableWidget->setRowCount(tableRows.size());
-    int mnRow = 0;
-    BOOST_FOREACH(MasternodeRow row, tableRows) {
-        ui->tableWidget->setItem(mnRow, 0, row.addressItem);
-        ui->tableWidget->setItem(mnRow, 1, row.rankItem);
-        ui->tableWidget->setItem(mnRow, 2, row.activeItem);
-        ui->tableWidget->setItem(mnRow, 3, row.activeSecondsItem);
-        ui->tableWidget->setItem(mnRow, 4, row.lastSeenItem);
-        ui->tableWidget->setItem(mnRow, 5, row.pubkeyItem);
-        mnRow++;
-    }
-
-    ui->countLabel->setText(QString::number(ui->tableWidget->rowCount()));
+    QMetaObject::invokeMethod(this, "updateMasternodeTable", Qt::QueuedConnection);
 
     if(pwalletMain)
     {
@@ -209,6 +197,30 @@ void MasternodeManager::updateNodeListConc()
             updateAdrenalineNode(QString::fromStdString(adrenaline.second.sAlias), QString::fromStdString(adrenaline.second.sAddress), QString::fromStdString(adrenaline.second.sMasternodePrivKey), QString::fromStdString(adrenaline.second.sCollateralAddress));
         }
     }
+}
+
+void MasternodeManager::updateMasternodeTable() {
+    ui->tableWidget->setUpdatesEnabled(false);
+    ui->tableWidget->setSortingEnabled(false);
+
+    ui->tableWidget->clearContents();
+    ui->tableWidget->setRowCount(masternodeTableRows.size());
+    int mnRow = 0;
+    BOOST_FOREACH(MasternodeRow row, masternodeTableRows) {
+        ui->tableWidget->setItem(mnRow, 0, row.addressItem);
+        ui->tableWidget->setItem(mnRow, 1, row.rankItem);
+        ui->tableWidget->setItem(mnRow, 2, row.activeItem);
+        ui->tableWidget->setItem(mnRow, 3, row.activeSecondsItem);
+        ui->tableWidget->setItem(mnRow, 4, row.lastSeenItem);
+        ui->tableWidget->setItem(mnRow, 5, row.pubkeyItem);
+        mnRow++;
+    }
+
+    ui->tableWidget->setSortingEnabled(true);
+    filterMasternodeList();
+    ui->tableWidget->setUpdatesEnabled(true);
+
+    ui->countLabel->setText(QString::number(ui->tableWidget->rowCount()));
 }
 
 void MasternodeManager::updateNodeList()
@@ -224,9 +236,33 @@ void MasternodeManager::updateNodeList()
     if (nSecondsToWait > 0) return;
 
     nTimeListUpdated = GetTime();
-    if (f1.isFinished())
+    if (f1.isFinished()) {
+        //updateNodeListConc();
+        ui->countLabel->setText("Updating...");
         f1 = QtConcurrent::run(this,&MasternodeManager::updateNodeListConc);
+    }
 
+}
+
+void MasternodeManager::filterMasternodeList() {
+    QString filter = ui->filterEdit->text();
+    if (filter.isEmpty()) {
+        for (int i = 0; i < ui->tableWidget->rowCount(); i++) {
+            ui->tableWidget->setRowHidden(i, false);
+        }
+    } else {
+        for (int i = 0; i < ui->tableWidget->rowCount(); i++) {
+            bool match = false;
+            for (int j = 0; j < ui->tableWidget->columnCount(); j++) {
+                QTableWidgetItem *item = ui->tableWidget->item( i, j );
+                if (item->text().contains(filter)) {
+                    match = true;
+                    break;
+                }
+            }
+            ui->tableWidget->setRowHidden(i, !match);
+        }
+    }
 }
 
 

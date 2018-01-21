@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QTimer>
 #include <QFuture>
+#include <QTableWidget>
 
 #define MASTERNODELIST_UPDATE_SECONDS 15
 
@@ -19,6 +20,16 @@ class WalletModel;
 QT_BEGIN_NAMESPACE
 class QModelIndex;
 QT_END_NAMESPACE
+
+
+struct MasternodeRow {
+    QTableWidgetItem *activeItem;
+    QTableWidgetItem *addressItem;
+    QTableWidgetItem *rankItem;
+    QTableWidgetItem *activeSecondsItem;
+    QTableWidgetItem *lastSeenItem;
+    QTableWidgetItem *pubkeyItem;
+};
 
 /** Masternode Manager page widget */
 class MasternodeManager : public QWidget
@@ -37,6 +48,7 @@ public slots:
     void updateNodeList();
     void updateNodeListConc();
     void updateAdrenalineNode(QString alias, QString addr, QString privkey, QString collateral);
+    void filterMasternodeList();
 
 signals:
 
@@ -49,6 +61,7 @@ private:
     QFuture<void> f1;
     void subscribeToCoreSignals();
     void unsubscribeFromCoreSignals();
+    std::vector<MasternodeRow> masternodeTableRows;
 
 private slots:
     void on_copyAddressButton_clicked();
@@ -61,6 +74,7 @@ private slots:
     void on_stopAllButton_clicked();
     void on_removeButton_clicked();
     void on_tableWidget_2_itemSelectionChanged();
+    void updateMasternodeTable();
 };
 
 #endif // MASTERNODEMANAGER_H
