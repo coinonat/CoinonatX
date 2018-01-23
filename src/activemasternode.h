@@ -36,6 +36,7 @@ public:
     }
 
     void ManageStatus(); // manage status of main masternode
+    std::string GetStatusString();
 
     bool Dseep(std::string& errorMessage); // ping for main masternode
     bool Dseep(CTxIn vin, CService service, CKey key, CPubKey pubKey, std::string &retErrorMessage, bool stop); // ping for any masternode

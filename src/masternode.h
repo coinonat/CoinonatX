@@ -83,6 +83,10 @@ public:
     //the dsq count from the last dsq broadcast of this node
     int64_t nLastDsq;
 
+    CMasterNode() :
+       addr(), vin(), lastTimeSeen(0), pubkey(), pubkey2(), sig(), now(), lastDseep(0), cacheInputAge(0), cacheInputAgeBlock(0), enabled(0), unitTest(false), allowFreeTx(true), protocolVersion(0)
+    {}
+
     CMasterNode(CService newAddr, CTxIn newVin, CPubKey newPubkey, std::vector<unsigned char> newSig, int64_t newNow, CPubKey newPubkey2, int protocolVersionIn)
     {
         addr = newAddr;
@@ -121,7 +125,6 @@ public:
     }
 
     void Check();
-
     bool UpdatedWithin(int seconds)
     {
         // LogPrintf("UpdatedWithin %d, %d --  %d \n", GetAdjustedTime() , lastTimeSeen, (GetAdjustedTime() - lastTimeSeen) < seconds);
@@ -157,6 +160,7 @@ public:
 int GetCurrentMasterNode(int mod=1, int64_t nBlockHeight=0, int minProtocol=CMasterNode::minProtoVersion);
 
 int GetMasternodeByVin(CTxIn& vin);
+bool GetMasternodeByVin(CTxIn& vin, CMasterNode& mn);
 int GetMasternodeRank(CTxIn& vin, int64_t nBlockHeight=0, int minProtocol=CMasterNode::minProtoVersion);
 
 typedef pair<int, CMasterNode> MasterNodeRank;

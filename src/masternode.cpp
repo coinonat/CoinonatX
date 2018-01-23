@@ -427,6 +427,15 @@ int GetMasternodeByVin(CTxIn& vin)
 
     return -1;
 }
+bool GetMasternodeByVin(CTxIn& vin, CMasterNode& mn) {
+    LOCK(cs_masternodes);
+    int i = GetMasternodeByVin(vin);
+
+    if (i == -1) return false;
+
+    mn = vecMasternodes[i];
+    return true;
+}
 
 int GetCurrentMasterNode(int mod, int64_t nBlockHeight, int minProtocol)
 {

@@ -109,6 +109,45 @@ void CActiveMasternode::ManageStatus()
     }
 }
 
+std::string CActiveMasternode::GetStatusString() {
+
+   std::string statusString = "";
+
+   switch (status) {
+      case MASTERNODE_NOT_PROCESSED:
+         statusString = "not processed";
+         break;
+      case MASTERNODE_IS_CAPABLE:
+         statusString = "capable";
+         break;
+      case MASTERNODE_NOT_CAPABLE:
+         statusString = "not capable";
+         break;
+      case MASTERNODE_STOPPED:
+         statusString = "stopped";
+         break;
+      case MASTERNODE_INPUT_TOO_NEW:
+         statusString = "input not mature";
+         break;
+      case MASTERNODE_PORT_NOT_OPEN:
+         statusString = "port not open";
+         break;
+      case MASTERNODE_PORT_OPEN:
+         statusString = "port open";
+         break;
+      case MASTERNODE_SYNC_IN_PROCESS:
+         statusString = "syncing";
+         break;
+      case MASTERNODE_REMOTELY_ENABLED:
+         statusString = "remotely enabled";
+         break;
+      default:
+         statusString = "unknown";
+   }
+
+   return statusString;
+}
+
 // Send stop dseep to network for remote masternode
 bool CActiveMasternode::StopMasterNode(std::string strService, std::string strKeyMasternode, std::string& errorMessage) {
 	CTxIn vin;
