@@ -606,20 +606,36 @@ Value masternode(const Array& params, bool fHelp)
 
     if(strCommand == "status")
     {
+        if (!fMasterNode)
+            throw JSONRPCError(RPC_INTERNAL_ERROR, "This is not a masternode");
+
         std::vector<CMasternodeConfig::CMasternodeEntry> mnEntries;
         mnEntries = masternodeConfig.getEntries();
 
+        Object mnObj;
+        mnObj.push_back(Pair("vin", activeMasternode.vin.ToString().c_str()));
+        mnObj.push_back(Pair("service", activeMasternode.service.ToString().c_str()));
+
+        CMasterNode mn;
+        if (GetMasternodeByVin(activeMasternode.vin, mn)) {
+            CScript pubkey = GetScriptForDestination(mn.pubkey.GetID());
+            CTxDestination address1;
+            ExtractDestination(pubkey, address1);
+            CBitcoinAddress address2(address1);
+            mnObj.push_back(Pair("payee", address2.ToString().c_str()));
+        } 
+
+        mnObj.push_back(Pair("status", activeMasternode.GetStatusString().c_str()));
+
+/*
         CScript pubkey;
         pubkey = GetScriptForDestination(activeMasternode.pubKeyMasternode.GetID());
         CTxDestination address1;
         ExtractDestination(pubkey, address1);
         CBitcoinAddress address2(address1);
-
-        Object mnObj;
-        mnObj.push_back(Pair("vin", activeMasternode.vin.ToString().c_str()));
-        mnObj.push_back(Pair("service", activeMasternode.service.ToString().c_str()));
-        mnObj.push_back(Pair("status", activeMasternode.status));
         mnObj.push_back(Pair("pubKeyMasternode", address2.ToString().c_str()));
+*/
+
         mnObj.push_back(Pair("notCapableReason", activeMasternode.notCapableReason.c_str()));
         return mnObj;
     }
