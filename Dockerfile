@@ -35,7 +35,7 @@ RUN apt-get -y --allow-unauthenticated install libdb4.8-dev libdb4.8++-dev
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/xcxt-community/CoinonatX.git CoinonatX && cd CoinonatX/src/ && make -f makefile.unix && cp coinonatxd /usr/local/sbin/coinonatxd
+RUN git clone https://github.com/coinonat/CoinonatX.git CoinonatX && cd CoinonatX/src/ && make -f makefile.unix && cp coinonatxd /usr/local/sbin/coinonatxd
 
 RUN mkdir /root/.CoinonatX/
 
