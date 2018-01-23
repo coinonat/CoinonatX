@@ -463,7 +463,7 @@ FORMS += \
     src/qt/forms/messagepage.ui \
     src/qt/forms/sendmessagesentry.ui \
     src/qt/forms/sendmessagesdialog.ui \
-    src/qt/plugins/mrichtexteditor/mrichtextedit.ui 
+    src/qt/plugins/mrichtexteditor/mrichtextedit.ui
 
 contains(USE_QRCODE, 1) {
 HEADERS += src/qt/qrcodedialog.h
@@ -532,7 +532,7 @@ isEmpty(BOOST_INCLUDE_PATH) {
 
 isEmpty(QRENCODE_LIB_PATH) {
     macx:QRENCODE_LIB_PATH = /usr/local/lib
-	windows:QRENCODE_LIB_PATH=C:/dev/coindeps32/qrencode-3.4.4/.libs	
+	windows:QRENCODE_LIB_PATH=C:/dev/coindeps32/qrencode-3.4.4/.libs
 }
 
 isEmpty(QRENCODE_INCLUDE_PATH) {
@@ -591,7 +591,7 @@ macx:HEADERS += src/qt/macdockiconhandler.h
 macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm
 macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
-macx:ICON = src/qt/res/icons/Coinonat.icns
+macx:ICON = src/qt/res/icons/coinonatx.icns
 macx:TARGET = "CoinonatX-qt"
 macx:QMAKE_CFLAGS_THREAD += -pthread
 macx:QMAKE_LFLAGS_THREAD += -pthread
