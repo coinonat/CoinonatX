@@ -24,7 +24,7 @@ RPC Port: `44578`
 
 Linux build (see the [Wiki](coming soon) for dependencies)
 -----------
-- git clone https://github.com/xcxt-community/CoinonatX.git CoinonatX
+- git clone https://github.com/coinonat/CoinonatX.git CoinonatX
 
 - cd CoinonatX/src
 
@@ -42,9 +42,9 @@ Linux build (see the [Wiki](coming soon) for dependencies)
 Windows build
 -------------
 
-- Download release from https://github.com/xcxt-community/CoinonatX/releases and unpack to C:/
+- Download release from https://github.com/coinonat/CoinonatX/releases and unpack to C:/
 
-- Download CoinonatX source from https://github.com/xcxt-community/CoinonatX/archive/master.zip
+- Download CoinonatX source from https://github.com/coinonat/CoinonatX/archive/master.zip
 
  - Unpack to C:/CoinonatX
 
