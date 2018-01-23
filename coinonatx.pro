@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = CoinonatX-qt
-VERSION = 2.0.4.4
+VERSION = 2.1
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
 QT += network printsupport
 DEFINES += ENABLE_WALLET
@@ -45,7 +45,7 @@ contains(RELEASE, 1) {
 
     !windows:!macx {
         # Linux: static link
-        # LIBS += -Wl,-Bstatic
+        LIBS += -Wl,-Bstatic
     }
 }
 

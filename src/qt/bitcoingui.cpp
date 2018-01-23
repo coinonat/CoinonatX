@@ -67,6 +67,7 @@
 #include <QtConcurrent/QtConcurrent>
 
 #include <iostream>
+#include <string>
 
 extern bool fOnlyTor;
 extern CWallet* pwalletMain;
@@ -90,7 +91,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     nWeight(0)
 {
     resize(970, 570);
-    setWindowTitle(tr("CoinonatX") + " - " + tr("Wallet"));
+    setWindowTitle(tr("CoinonatX") + " - " + tr("Wallet") + " - " + QString(FormatFullVersion().c_str()));
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
@@ -117,6 +118,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Create tabs
     overviewPage = new OverviewPage();
+    overviewPage->setContentsMargins(0, 0, 0, 0);
    
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -195,6 +197,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     // Progress bar and label for blocks download
     progressBarLabel = new QLabel();
+    if (!fUseBlackTheme) {
+        progressBarLabel->setStyleSheet("QLabel { color: #ffffff; }");
+    } else {
+        progressBarLabel->setStyleSheet("QLabel { color: #ffffff; background-color: #404040; }");
+    }
     progressBarLabel->setVisible(false);
     progressBar = new QProgressBar();
     progressBar->setAlignment(Qt::AlignCenter);
@@ -283,7 +290,7 @@ void BitcoinGUI::createActions()
     addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(addressBookAction);
 
-    masternodeManagerAction = new QAction(QIcon(":/icons/bitcoin"), tr("&Masternodes"), this);
+    masternodeManagerAction = new QAction(QIcon(":/icons/toolbar"), tr("&Masternodes"), this);
     masternodeManagerAction->setToolTip(tr("Show Masternodes Nodes status and configure your nodes."));
     masternodeManagerAction->setCheckable(true);
     tabGroup->addAction(masternodeManagerAction);
@@ -400,14 +407,35 @@ void BitcoinGUI::createToolBars()
     toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     toolbar->setContextMenuPolicy(Qt::PreventContextMenu);
     toolbar->setObjectName("tabs");
-    toolbar->setStyleSheet("QToolButton { color: #ffffff; } QToolButton:hover { background-color: #3CB0E8 } QToolButton:checked { background-color: #164356 } QToolButton:pressed { background-color: #164356 } #tabs { color: #ffffff; background-color: qradialgradient(cx: -0.8, cy: 0, fx: -0.8, fy: 0, radius: 0.6, stop: 0 #404040, stop: 1 #101010);  }");
+    //toolbar->setStyleSheet("QToolButton { color: #ffffff; } QToolButton:hover { background-color: #3CB0E8 } QToolButton:checked { background-color: #164356 } QToolButton:pressed { background-color: #164356 } #tabs { color: #ffffff; background-color: qradialgradient(cx: -0.8, cy: 0, fx: -0.8, fy: 0, radius: 0.6, stop: 0 #404040, stop: 1 #101010);  }");
+
+	QString toolBarStyle = "QToolButton { color: #0382ab; ";
+
+    if (!fUseBlackTheme) {
+        toolBarStyle += "border: 2px solid rgba(255,255,255,0);";
+    } else {
+        toolBarStyle += "border: 2px solid rgb(30,32,36);";
+    }
+
+    toolBarStyle += " } QToolButton:hover { background-color: #3CB0E8; border: 2px solid #3CB0E8; } QToolButton:checked { background-color: #3CB0E8; border: 2px solid #0382ab; color: #ffffff } QToolButton:pressed { background-color: #164356 } #tabs { color: #ffffff; ";
+
+    if (!fUseBlackTheme) {
+        toolBarStyle += "background-color: #ffffff;";
+    } else {
+        //toolBarStyle += "background: rgb(41,44,48);";
+    }
+    toolBarStyle += "}";
+    toolbar->setStyleSheet(toolBarStyle);
 
     QLabel* header = new QLabel();
     header->setMinimumSize(128, 128);
     header->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    header->setPixmap(QPixmap(":/icons/bitcoin"));
+    header->setPixmap(QPixmap(":/images/header"));
     header->setMaximumSize(180,180);
     header->setScaledContents(true);
+    if (fUseBlackTheme) {
+        header->setStyleSheet("QLabel { background: none }");
+    }
     toolbar->addWidget(header);
 
     //QMenu *toolbarMenu = new QMenu();
@@ -425,6 +453,10 @@ void BitcoinGUI::createToolBars()
     toolbar->setMovable(false);
 
     addToolBar(Qt::LeftToolBarArea, toolbar);
+
+    foreach(QAction *action, toolbar->actions()) {
+        toolbar->widgetForAction(action)->setFixedWidth(180);
+    }
 }
 
 void BitcoinGUI::setClientModel(ClientModel *clientModel)
@@ -598,15 +630,16 @@ void BitcoinGUI::setNumBlocksConc(int count) {
 
 void BitcoinGUI::setNumBlocks(int count)
 {
-
-    QString tooltip;
-
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
     QDateTime currentDate = QDateTime::currentDateTime();
     int totalSecs = GetTime() - Params().GenesisBlock().GetBlockTime();
     int secs = lastBlockDate.secsTo(currentDate);
 
-    tooltip = tr("Processed %1 blocks of transaction history.").arg(count);
+    QMetaObject::invokeMethod(this, "updateNumBlocks", Qt::QueuedConnection, Q_ARG(int, count), Q_ARG(int, totalSecs), Q_ARG(int, secs));
+}
+
+void BitcoinGUI::updateNumBlocks(int count, int totalSecs, int secs) {
+    QString tooltip = tr("Processed %1 blocks of transaction history.").arg(count);
 
     // Set icon state: spinning if catching up, tick otherwise
     if(secs < 90*60)

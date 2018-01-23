@@ -279,6 +279,7 @@ bool OverviewPage::getOutOfSyncWarning(void)
 
 void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
+    this->is_out_of_sync = fShow;
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
 }

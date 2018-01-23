@@ -1499,7 +1499,7 @@ void CWallet::AvailableCoinsMN(vector<COutput>& vCoins, bool fOnlyConfirmed, con
                     found = true;
                     if (IsCollateralAmount(pcoin->vout[i].nValue)) continue; // do not use collateral amounts
                     found = !IsDenominatedAmount(pcoin->vout[i].nValue);
-                    if(found && coin_type == ONLY_NONDENOMINATED_NOTMN) found = (pcoin->vout[i].nValue != 30000*COIN); // do not use MN funds
+                    if(found && coin_type == ONLY_NONDENOMINATED_NOTMN) found = (pcoin->vout[i].nValue != GetMNCollateral()*COIN); // do not use MN funds
                 } else {
                     found = true;
                 }
@@ -1576,8 +1576,8 @@ void CWallet::AvailableCoinsForStaking(vector<COutput>& vCoins, unsigned int nSp
             if(found) continue;
 
             for (unsigned int i = 0; i < pcoin->vout.size(); i++) {
-                if (!(pcoin->IsSpent(i)) && IsMine(pcoin->vout[i]) != ISMINE_NO && pcoin->vout[i].nValue >= nMinimumInputValue)
-                    vCoins.push_back(COutput(pcoin, i, nDepth, IsMine(pcoin->vout[i]) & ISMINE_SPENDABLE));
+                if (!(pcoin->IsSpent(i)) && IsMine(pcoin->vout[i]) && pcoin->vout[i].nValue >= nMinimumInputValue)
+                    vCoins.push_back(COutput(pcoin, i, nDepth, true));
             }
         }
     }
@@ -3191,7 +3191,7 @@ bool CWallet::FindStealthTransactions(const CTransaction& tx, mapValue_t& mapNar
                     printf("StealthSecret failed.\n");
                     continue;
                 };
-                //printf("pkExtracted %"PRIszu": %s\n", pkExtracted.size(), HexStr(pkExtracted).c_str());
+                //printf("pkExtracted %" PRIszu ": %s\n", pkExtracted.size(), HexStr(pkExtracted).c_str());
                 
                 CPubKey cpkE(pkExtracted);
                 

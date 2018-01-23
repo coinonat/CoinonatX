@@ -214,6 +214,7 @@ private slots:
 
     void updateWeight();
     void updateStakingIconConc();
+    void updateNumBlocks(int count, int totalSecs, int secs);
 
     /** called by a timer to check if fRequestShutdown has been set **/
     void detectShutdown();
